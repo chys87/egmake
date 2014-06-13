@@ -6,6 +6,7 @@ all: egmake.so
 
 SRCS := $(wildcard *.c)
 OBJS := $(SRCS:%.c=%.o)
+DEPS := $(SRCS:%.c=%.P)
 
 CC := gcc
 CFLAGS := -O2 -march=native -flto -std=gnu99 -fPIC \
@@ -65,6 +66,13 @@ egmake-unstripped.so: $(OBJS)
 
 $(OBJS): %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
+
+$(DEPS): %.P: %.c
+	$(CC) $(CFLAGS) -MM -MP -MF $@ -MT '$@ $(basename $@).o' $<
+
+ifneq "$(MAKECMDGOALS)" "clean"
+include $(DEPS)
+endif
 
 clean:
 	rm -f *.so *.o
