@@ -88,3 +88,4 @@ test-$(1):
 	./gen_test_makefile.sh $(1) | make --no-print-directory -f -
 endef
 $(foreach src,$(SRCS),$(eval $(call define_test,$(src))))
+test: egmake.so

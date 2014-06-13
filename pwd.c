@@ -12,7 +12,7 @@ char *func_pwd(const char *nm, unsigned int argc, char **argv) {
 /*
 MAKEFILE-TEST-BEGIN
 
-test-pwd:
+test:
 	test "$(EGM.pwd )" = "$(shell pwd)"
 
 MAKEFILE-TEST-END

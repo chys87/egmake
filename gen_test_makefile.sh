@@ -5,12 +5,9 @@ if [[ ! -r "$1" ]]; then
 	exit 1
 fi
 
-TEST_TARGET="test-${1##*/}"
-TEST_TARGET="${TEST_TARGET%.*}"
-
 echo "load egmake.so"
-echo ".PHONY: $TEST_TARGET"
-echo ".DEFAULT_GOAL = $TEST_TARGET"
+echo ".PHONY: test"
+echo "test:"
 echo ".SUFFIXES :="
 
 sed -n -e '
