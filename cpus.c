@@ -15,20 +15,35 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 #include <gnumake.h>
+#include <stdio.h>
+#include <string.h>
 
-int plugin_is_GPL_compatible __attribute__((visibility("default")));
-
-typedef char *gmk_func_type(const char *, unsigned, char **);
-
-gmk_func_type func_cat;
-gmk_func_type func_cpus;
-gmk_func_type func_pwd;
-
-int egmake_gmk_setup(void) __attribute__((visibility("default")));
-int egmake_gmk_setup(void) {
-	gmk_add_function("EGM.cat", &func_cat, 1, 0, GMK_FUNC_DEFAULT);
-	gmk_add_function("EGM.pwd", &func_pwd, 0, 0, GMK_FUNC_DEFAULT);
-	gmk_add_function("EGM.cpus", &func_cpus, 0, 0, GMK_FUNC_DEFAULT);
-	return 1;
+// Count the number of logical processors
+char *func_cpus(const char *nm, unsigned int argc, char **argv) {
+	unsigned cpu_cnt = 0;
+	char buf[512];
+	FILE *fp = fopen("/proc/cpuinfo", "rec");
+	if (fp == NULL) {
+		fprintf(stderr, "Failed to open /proc/cpuinfo\n");
+		return NULL;
+	}
+	while (fgets_unlocked(buf, sizeof(buf), fp)) {
+		if (memcmp(buf, "processor\t", 10) == 0)
+			++cpu_cnt;
+	}
+	fclose(fp);
+	char *res = gmk_alloc(8);
+	snprintf(res, 8, "%u", cpu_cnt);
+	return res;
 }
+
+/*
+MAKEFILE-TEST-BEGIN
+
+test:
+	test "$(EGM.cpus )" -eq "`egrep '^processor\s*:' /proc/cpuinfo | wc -l`"
+
+MAKEFILE-TEST-END
+*/
