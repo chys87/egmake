@@ -15,16 +15,25 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+set -e
+
 if [[ ! -r "$1" ]]; then
 	echo "You must specify a filename." >&2
 	exit 1
 fi
 
-echo "load egmake.so"
-echo ".PHONY: test"
-echo "test:"
-echo ".SUFFIXES :="
+tmpfile="`mktemp`"
+trap 'rm -f "$tmpfile"' EXIT
 
-sed -n -e '
-/MAKEFILE-TEST-BEGIN/,/MAKEFILE-TEST-END/ { /MAKEFILE-TEST-\(BEGIN\|END\)/d; p }
-' $1
+{
+	echo "load $PWD/egmake.so"
+	echo ".PHONY: test"
+	echo "test:"
+	echo ".SUFFIXES :="
+
+	sed -n -e '
+	/MAKEFILE-TEST-BEGIN/,/MAKEFILE-TEST-END/ { /MAKEFILE-TEST-\(BEGIN\|END\)/d; p }
+	' $1
+} >"$tmpfile"
+
+${MAKE:-make} --no-print-directory -f "$tmpfile"

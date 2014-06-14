@@ -100,8 +100,7 @@ $(INSTNAME): egmake.so
 define define_test
 .PHONY: test-$(1)
 test: test-$(1)
-test-$(1):
-	./gen_test_makefile.sh $(1) | make --no-print-directory -f -
+test-$(1): egmake.so
+	+./run_test.sh $(1)
 endef
 $(foreach src,$(SRCS),$(eval $(call define_test,$(src))))
-test: egmake.so
