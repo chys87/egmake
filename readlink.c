@@ -15,22 +15,31 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 #include <gnumake.h>
+#include <limits.h>
+#include <unistd.h>
+#include "fsyscall.h"
 
-int plugin_is_GPL_compatible __attribute__((visibility("default")));
-
-typedef char *gmk_func_type(const char *, unsigned, char **);
-
-gmk_func_type func_cat;
-gmk_func_type func_cpus;
-gmk_func_type func_pwd;
-gmk_func_type func_readlink;
-
-int egmake_gmk_setup(void) __attribute__((visibility("default")));
-int egmake_gmk_setup(void) {
-	gmk_add_function("EGM.cat", &func_cat, 1, 0, GMK_FUNC_DEFAULT);
-	gmk_add_function("EGM.pwd", &func_pwd, 0, 0, GMK_FUNC_DEFAULT);
-	gmk_add_function("EGM.cpus", &func_cpus, 0, 0, GMK_FUNC_DEFAULT);
-	gmk_add_function("EGM.readlink", &func_readlink, 1, 1, GMK_FUNC_DEFAULT);
-	return 1;
+char *func_readlink(const char *nm, unsigned int argc, char **argv) {
+	if (argc != 1)
+		return NULL;
+	char *buf = gmk_alloc(PATH_MAX);
+	ssize_t l = fsys_readlink(argv[0], buf, PATH_MAX - 1);
+	if (l <= 0) {
+		gmk_free(buf);
+		return NULL;
+	} else {
+		buf[l] = '\0';
+		return buf;
+	}
 }
+
+/*
+MAKEFILE-TEST-BEGIN
+
+test:
+	test "$(EGM.readlink /dev/stdin)" = "$(shell readlink /dev/stdin)"
+
+MAKEFILE-TEST-END
+*/
