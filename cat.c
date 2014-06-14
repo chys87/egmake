@@ -21,6 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include "fsyscall.h"
 #include "util.h"
 
 // Cat files, replacing '\r' and '\n' by spaces
@@ -31,7 +32,7 @@ char *func_cat(const char *nm, unsigned int argc, char **argv) {
 	const size_t min_grow = 4096;
 	while (*argv) {
 		const char *fname = *argv++;
-		int fd = open(fname, O_RDONLY | O_CLOEXEC);
+		int fd = fsys_open2(fname, O_RDONLY | O_CLOEXEC);
 		if (fd < 0) {
 			free(res);
 			fprintf(stderr, "Failed to open file: %s\n", fname);
@@ -42,12 +43,12 @@ char *func_cat(const char *nm, unsigned int argc, char **argv) {
 				cap = L + max_size(L, min_grow);
 				res = realloc(res, cap);
 			}
-			ssize_t l = read(fd, res + L, cap - L);
+			ssize_t l = fsys_read(fd, res + L, cap - L);
 			if (l <= 0)
 				break;
 			L += l;
 		}
-		close(fd);
+		fsys_close(fd);
 	}
 	char *ret = gmk_alloc(L + 1);
 	memcpy(ret, res, L);
