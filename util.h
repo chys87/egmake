@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #include <stddef.h>
+#include <string.h>
 
 void strtr_in_place(char *s, size_t l, char from, char to);
 
@@ -27,3 +28,6 @@ void replace_cr_ln_in_place(char *, size_t);
 static inline size_t max_size(size_t a, size_t b) {
 	return (a < b) ? b : a;
 }
+
+char *Memcpy(char *d, const void *s, size_t n);
+char *Mempcpy(char *d, const void *s, size_t n);

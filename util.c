@@ -33,3 +33,11 @@ void replace_cr_ln_in_place(char *s, size_t l) {
 	strtr_in_place(s, l, '\r', ' ');
 	strtr_in_place(s, l, '\n', ' ');
 }
+
+char *Memcpy(char *d, const void *s, size_t n) {
+	return (char *)memcpy(d, s, n);
+}
+
+char *Mempcpy(char *d, const void *s, size_t n) {
+	return (char *)mempcpy(d, s, n);
+}
