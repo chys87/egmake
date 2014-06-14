@@ -25,6 +25,7 @@ gmk_func_type func_cat;
 gmk_func_type func_cpus;
 gmk_func_type func_pwd;
 gmk_func_type func_readlink;
+gmk_func_type func_realpath;
 
 int egmake_gmk_setup(void) __attribute__((visibility("default")));
 int egmake_gmk_setup(void) {
@@ -32,5 +33,6 @@ int egmake_gmk_setup(void) {
 	gmk_add_function("EGM.pwd", &func_pwd, 0, 0, GMK_FUNC_DEFAULT);
 	gmk_add_function("EGM.cpus", &func_cpus, 0, 0, GMK_FUNC_DEFAULT);
 	gmk_add_function("EGM.readlink", &func_readlink, 1, 1, GMK_FUNC_DEFAULT);
+	gmk_add_function("EGM.realpath", &func_realpath, 1, 1, GMK_FUNC_DEFAULT);
 	return 1;
 }
