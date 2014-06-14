@@ -27,6 +27,7 @@ DEPS := $(SRCS:%.c=%.P)
 CC := gcc
 CFLAGS := -O2 -march=native -flto -std=gnu99 -fPIC \
 	-D_GNU_SOURCE -DNDEBUG \
+	-fno-unwind-tables -fno-asynchronous-unwind-tables -fno-exceptions \
 	-fvisibility=hidden \
 	-fmerge-all-constants -fno-common \
 	-fno-ident \
