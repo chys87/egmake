@@ -32,7 +32,7 @@ CFLAGS := -O2 -march=native -flto -std=gnu99 -fPIC \
 	-fmerge-all-constants -fno-common \
 	-fno-ident \
 	-Qn \
-	-Wall -Wextra -Wno-shadow -Wwrite-strings -Wabi \
+	-Wall -Wextra -Wno-shadow -Wwrite-strings \
 	-Wno-unused-parameter -Wno-missing-field-initializers \
 	-Wno-sign-compare -Wno-clobbered \
 	-Wformat -Wformat-security -Wmissing-include-dirs -Wfloat-equal \
